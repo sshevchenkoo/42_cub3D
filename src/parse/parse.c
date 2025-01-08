@@ -17,12 +17,12 @@ int	parse_color(const char *color_str)
     int r, g, b;
     if (sscanf(color_str, "%d,%d,%d", &r, &g, &b) != 3)
 	{
-        printf("%s", "Error: Invalid color format. Expected 'R,G,B'\n");
+        error_msg(ERR_RGB_VAL, 1);
         return (-1);
     }
     if ((r < 0 || r > 255) || (g < 0 || g > 255) || (b < 0 || b > 255))
 	{
-        printf("%s", "Error: Color values should be in range 0-255\n");
+        error_msg(ERR_RGB_VAL, 1);
         return (-1);
     }
     return (r << 16) | (g << 8) | b;
@@ -189,7 +189,7 @@ int count_file_lines(const char *file_path)
 	fd = open(file_path, O_RDONLY);
     if (fd < 0)
 	{
-        perror("Error opening file for line count");
+        error_msg(ERR_FL, 2);
         return -1;
     }
     while ((line = get_next_line(fd)))
@@ -223,7 +223,8 @@ void set_player_position(t_data *data)
         j = 0;
         while (j < data->map_det.width)
         {
-            if (data->map[i][j] == 'W' || data->map[i][j] == 'S' || data->map[i][j] == 'E' || data->map[i][j] == 'N')
+            if (data->map[i][j] == 'W' || data->map[i][j] == 'S'
+            || data->map[i][j] == 'E' || data->map[i][j] == 'N')
             {
                 data->player.pos_x = j + 0.5;
                 data->player.pos_y = i + 0.5;
@@ -236,46 +237,46 @@ void set_player_position(t_data *data)
     }
 }
 
-int parse_file(const char *file_path, t_data *data)
+int	parse_file(const char *file_path, t_data *data)
 {
 	int fd_map;
 
 	data->map_det.lines_file = count_file_lines(file_path);
-    if (data->map_det.lines_file < 0)
+	if (data->map_det.lines_file < 0)
 	{
-        printf("Error: Could not count lines in file.\n");
-        return 0;
-    }
-    fd_map = open(file_path, O_RDONLY);
-    if (fd_map < 0)
+		error_msg(ERR_MAP, 1);
+		return 0;
+	}
+	fd_map = open(file_path, O_RDONLY);
+	if (fd_map < 0)
 	{
-        perror("Error opening file");
-        return 0;
-    }
+		error_msg(ERR_FL, 2);
+		return 0;
+	}
 	data->map_det.fd = fd_map;
 	data->map_det.path = ft_strdup(file_path);
-    if (!parse_textures_and_colors(fd_map, &data->texture_det))
+	if (!parse_textures_and_colors(fd_map, &data->texture_det))
 	{
-        printf("Error: No map found or invalid texture/color format.\n");
-        close(fd_map);
-        return 0;
-    }
-    data->map = init_map(fd_map);
-    if (!data->map)
+		error_msg(ERR_MAP, 1);
+		close(fd_map);
+		return 0;
+	}
+	data->map = init_map(fd_map);
+	if (!data->map)
 	{
-        printf("Error: Failed to initialize map.\n");
-        close(fd_map);
-        return 0;
-    }
-    close(fd_map);
+		error_msg(ERR_MAP, 1);
+		close(fd_map);
+		return 0;
+	}
+	close(fd_map);
 	data->map_det.height = calculate_map_height(data->map);
-    data->map_det.width = calculate_map_width(data->map);
-    data->map_det.start_i_map = data->map_det.lines_file - data->map_det.height;
-    data->map_det.end_i_map = data->map_det.lines_file;
+	data->map_det.width = calculate_map_width(data->map);
+	data->map_det.start_i_map = data->map_det.lines_file - data->map_det.height;
+	data->map_det.end_i_map = data->map_det.lines_file;
 	data->texture_det.floor = malloc(sizeof(int));
-    data->texture_det.ceiling = malloc(sizeof(int));
+	data->texture_det.ceiling = malloc(sizeof(int));
 	*(data->texture_det.floor) = color_floor(data->texture_det.hex_floor);
-    *(data->texture_det.ceiling) = color_ceiling(data->texture_det.hex_ceiling);
+	*(data->texture_det.ceiling) = color_ceiling(data->texture_det.hex_ceiling);
 	set_player_position(data);
-    return (1);
+	return (1);
 }

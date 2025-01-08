@@ -97,8 +97,6 @@ void print_data(t_data *data) {
     print_map_det(&data->map_det);
     print_texture_det(&data->texture_det);
     print_player(&data->player);
-    // Вывод карты или текстур может потребовать дополнительной обработки, если они не просто указатели.
-    // Например:
     printf("Map:\n");
     for (int i = 0; data->map && data->map[i]; i++) {
         printf("  %s\n", data->map[i]);
@@ -112,13 +110,14 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		return (error_msg(ERR_ARGS, 1));
 	ft_bzero(&data, sizeof(t_data));
-	if (!parse_file(argv[1], &data)) {
-        printf("Error parsing file.\n");
-        return EXIT_FAILURE;
-    }
+	if (!parse_file(argv[1], &data))
+	{
+		error_msg(ERR_FL, 1);
+		return EXIT_FAILURE;
+	}
 	print_data(&data);
 	if (!is_map_closed(data.map))
-        return(printf("Error no valid map\n"), 1);
+        	return(error_msg(ERR_MAP, 1), 1);
 	starting_view(&data);
 	starting_game(&data);
 	mlx_loop(data.view.mlx);
