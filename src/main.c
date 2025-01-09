@@ -18,7 +18,7 @@ static void	starting_view(t_data *data)
 	}
 	init_img(data, &data->view.screen, WIDTH, HEIGHT);
 }
-
+/*
 void print_texture_det(t_texture_det *texture) {
     printf("Texture Details:\n");
     printf("  North: %s\n", texture->north);
@@ -101,7 +101,7 @@ void print_data(t_data *data) {
     for (int i = 0; data->map && data->map[i]; i++) {
         printf("  %s\n", data->map[i]);
     }
-}
+}*/
 
 int	main(int argc, char **argv)
 {
@@ -113,11 +113,11 @@ int	main(int argc, char **argv)
 	if (!parse_file(argv[1], &data))
 	{
 		error_msg(ERR_FL, 1);
-		return EXIT_FAILURE;
+		return (EXIT_FAILURE);
 	}
-	print_data(&data);
+	//print_data(&data);
 	if (!is_map_closed(data.map))
-        	return(error_msg(ERR_MAP, 1), 1);
+		return (error_msg(ERR_MAP, 1), 1);
 	starting_view(&data);
 	starting_game(&data);
 	mlx_loop(data.view.mlx);

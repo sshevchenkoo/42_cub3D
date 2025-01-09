@@ -2,7 +2,7 @@
 
 int	check_first_last_row(char *row)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (row[i])
@@ -16,7 +16,7 @@ int	check_first_last_row(char *row)
 
 int	find_walls_in_row(char *row, int row_len, int *first_wall, int *last_wall)
 {
-	int j;
+	int	j;
 
 	j = 0;
 	*first_wall = -1;
@@ -31,7 +31,6 @@ int	find_walls_in_row(char *row, int row_len, int *first_wall, int *last_wall)
 		}
 		j++;
 	}
-
 	return (*first_wall != -1);
 }
 
@@ -71,8 +70,6 @@ int	check_sides_and_spaces(char **map, int total_rows)
 	}
 	return (1);
 }
-
-
 
 int	is_map_closed(char **map)
 {
