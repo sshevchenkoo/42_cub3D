@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:04:47 by itykhono          #+#    #+#             */
-/*   Updated: 2025/03/12 14:24:09 by itykhono         ###   ########.fr       */
+/*   Updated: 2025/03/12 14:26:46 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,15 +128,58 @@ int	parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
 	return (i == 6);
 }
 
+char	**expand_map_capacity(char **map, int *capacity, int size)
+{
+	char	**new_map;
+	int		j;
+	int		new_capacity;
+
+	new_capacity = (*capacity) * 2;
+	new_map = malloc(sizeof(char *) * new_capacity);
+	if (!new_map)
+	{
+		while (size > 0)
+			free(map[--size]);
+		free(map);
+		return (NULL);
+	}
+	j = 0;
+	while (j < *capacity)
+	{
+		new_map[j] = map[j];
+		j++;
+	}
+	free(map);
+	*capacity = new_capacity;
+	return (new_map);
+}
+
+int	add_map_row(char *row, char ***map, int *i, int *capacity)
+{
+	size_t	len;
+
+	len = ft_strlen(row);
+	if (len > 0 && row[len - 1] == '\n')
+		row[len - 1] = '\0';
+	if (ft_strchr(row, '1') || ft_strchr(row, '0'))
+	{
+		if (*i >= *capacity)
+		{
+			*map = expand_map_capacity(*map, capacity, *i);
+			if (!(*map))
+				return (0);
+		}
+		(*map)[(*i)++] = ft_strdup(row);
+	}
+	return (1);
+}
+
 char	**init_map(int fd_map)
 {
 	char	*map_row;
 	char	**map;
 	int		i;
 	int		map_capacity;
-	int		j;
-	int		new_capacity;
-	char	**new_map;
 
 	i = 0;
 	map_capacity = 5;
@@ -146,48 +189,10 @@ char	**init_map(int fd_map)
 	map_row = get_next_line(fd_map);
 	while (map_row)
 	{
-		if (ft_strcmp(map_row, "\n") == 0)
+		if (ft_strcmp(map_row, "\n") != 0)
 		{
-			free(map_row);
-			map_row = get_next_line(fd_map);
-			continue ;
-		}
-		if (ft_strlen(map_row) > 0 && map_row[ft_strlen(map_row) - 1] == '\n')
-			map_row[ft_strlen(map_row) - 1] = '\0';
-		if (ft_strchr(map_row, '1') || ft_strchr(map_row, '0'))
-		{
-			if (i >= map_capacity)
-			{
-				new_capacity = map_capacity * 2;
-				new_map = malloc(sizeof(char *) * new_capacity);
-				if (!new_map)
-				{
-					while (i > 0)
-						free(map[--i]);
-					free(map);
-					free(map_row);
-					return (NULL);
-				}
-				j = 0;
-				while (j < map_capacity)
-				{
-					new_map[j] = map[j];
-					j++;
-				}
-				free(map);
-				map = new_map;
-				map_capacity = new_capacity;
-			}
-			map[i] = ft_strdup(map_row);
-			if (!map[i])
-			{
-				while (i > 0)
-					free(map[--i]);
-				free(map);
-				free(map_row);
+			if (!add_map_row(map_row, &map, &i, &map_capacity))
 				return (NULL);
-			}
-			i++;
 		}
 		free(map_row);
 		map_row = get_next_line(fd_map);
