@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:04:47 by itykhono          #+#    #+#             */
-/*   Updated: 2025/03/12 12:05:05 by itykhono         ###   ########.fr       */
+/*   Updated: 2025/03/12 12:18:14 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,13 @@ int	parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
 	int		i;
 
 	i = 0;
-	while ((line = get_next_line(fd_map)))
+	line = get_next_line(fd_map);
+	while (line)
 	{
 		if (ft_strcmp(line, "\n") == 0)
 		{
 			free(line);
+			line = get_next_line(fd_map);
 			continue ;
 		}
 		trim_newline(line);
@@ -109,6 +111,7 @@ int	parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
 		}
 		free(line);
 		i++;
+		line = get_next_line(fd_map);
 	}
 	return (0);
 }
@@ -120,7 +123,6 @@ char	**init_map(int fd_map)
 	int		i;
 	int		map_capacity;
 	int		j;
-	size_t	len;
 	int		new_capacity;
 	char	**new_map;
 
@@ -129,28 +131,29 @@ char	**init_map(int fd_map)
 	map = malloc(sizeof(char *) * map_capacity);
 	if (!map)
 		return (NULL);
-	while ((map_row = get_next_line(fd_map)))
+	map_row = get_next_line(fd_map);
+	while (map_row)
 	{
 		if (ft_strcmp(map_row, "\n") == 0)
 		{
 			free(map_row);
+			map_row = get_next_line(fd_map);
 			continue ;
 		}
-		len = ft_strlen(map_row);
-		if (map_row[len - 1] == '\n')
-			map_row[len - 1] = '\0';
+		if (ft_strlen(map_row) > 0 && map_row[ft_strlen(map_row) - 1] == '\n')
+			map_row[ft_strlen(map_row) - 1] = '\0';
 		if (ft_strchr(map_row, '1') || ft_strchr(map_row, '0'))
 		{
 			if (i >= map_capacity)
 			{
 				new_capacity = map_capacity * 2;
 				new_map = malloc(sizeof(char *) * new_capacity);
-					// Corrected allocation
 				if (!new_map)
 				{
 					while (i > 0)
 						free(map[--i]);
 					free(map);
+					free(map_row);
 					return (NULL);
 				}
 				j = 0;
@@ -163,9 +166,19 @@ char	**init_map(int fd_map)
 				map = new_map;
 				map_capacity = new_capacity;
 			}
-			map[i++] = ft_strdup(map_row);
+			map[i] = ft_strdup(map_row);
+			if (!map[i])
+			{
+				while (i > 0)
+					free(map[--i]);
+				free(map);
+				free(map_row);
+				return (NULL);
+			}
+			i++;
 		}
 		free(map_row);
+		map_row = get_next_line(fd_map);
 	}
 	map[i] = NULL;
 	return (map);
@@ -214,14 +227,17 @@ int	count_file_lines(const char *file_path)
 		error_msg(ERR_FL, 2);
 		return (-1);
 	}
-	while ((line = get_next_line(fd)))
+	line = get_next_line(fd);
+	while (line)
 	{
 		lines++;
 		free(line);
+		line = get_next_line(fd);
 	}
 	close(fd);
 	return (lines);
 }
+
 
 int	color_floor(unsigned long floor_color)
 {
