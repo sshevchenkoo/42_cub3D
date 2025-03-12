@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/12 12:04:47 by itykhono          #+#    #+#             */
+/*   Updated: 2025/03/12 12:05:05 by itykhono         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/cub3d.h"
 
 int	ft_strcmp(const char *s1, const char *s2)
@@ -14,8 +26,8 @@ int	ft_strcmp(const char *s1, const char *s2)
 
 int	parse_color(const char *color_str)
 {
-	int	r; 
-	int	g; 
+	int	r;
+	int	g;
 	int	b;
 
 	if (sscanf(color_str, "%d,%d,%d", &r, &g, &b) != 3)
@@ -31,9 +43,9 @@ int	parse_color(const char *color_str)
 	return ((r << 16) | (g << 8) | b);
 }
 
-char *trim_newline(char *str)
+char	*trim_newline(char *str)
 {
-	size_t len;
+	size_t	len;
 
 	len = ft_strlen(str);
 	if (len > 0 && str[len - 1] == '\n')
@@ -41,10 +53,10 @@ char *trim_newline(char *str)
 	return (str);
 }
 
-int parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
+int	parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
 {
 	char	*line;
-	int	i 
+	int		i;
 
 	i = 0;
 	while ((line = get_next_line(fd_map)))
@@ -52,7 +64,7 @@ int parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
 		if (ft_strcmp(line, "\n") == 0)
 		{
 			free(line);
-			continue;
+			continue ;
 		}
 		trim_newline(line);
 		if (i < 4)
@@ -65,7 +77,8 @@ int parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
 				texture_det->west = ft_strdup(line + 3);
 			else if (ft_strncmp(line, "EA ", 3) == 0)
 				texture_det->east = ft_strdup(line + 3);
-			else {
+			else
+			{
 				free(line);
 				return (0);
 			}
@@ -100,28 +113,28 @@ int parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
 	return (0);
 }
 
-char **init_map(int fd_map)
+char	**init_map(int fd_map)
 {
 	char	*map_row;
 	char	**map;
-	int	i;
-	int	map_capacity;
-	int	j;
+	int		i;
+	int		map_capacity;
+	int		j;
 	size_t	len;
-	int	new_capacity;
+	int		new_capacity;
 	char	**new_map;
 
 	i = 0;
 	map_capacity = 5;
 	map = malloc(sizeof(char *) * map_capacity);
 	if (!map)
-		return NULL;
+		return (NULL);
 	while ((map_row = get_next_line(fd_map)))
 	{
 		if (ft_strcmp(map_row, "\n") == 0)
 		{
 			free(map_row);
-			continue;
+			continue ;
 		}
 		len = ft_strlen(map_row);
 		if (map_row[len - 1] == '\n')
@@ -131,13 +144,14 @@ char **init_map(int fd_map)
 			if (i >= map_capacity)
 			{
 				new_capacity = map_capacity * 2;
-				**new_map = malloc(sizeof(char *) * new_capacity);
+				new_map = malloc(sizeof(char *) * new_capacity);
+					// Corrected allocation
 				if (!new_map)
 				{
 					while (i > 0)
 						free(map[--i]);
 					free(map);
-					return NULL;
+					return (NULL);
 				}
 				j = 0;
 				while (j < map_capacity)
@@ -154,10 +168,10 @@ char **init_map(int fd_map)
 		free(map_row);
 	}
 	map[i] = NULL;
-	return map;
+	return (map);
 }
 
-int calculate_map_height(char **map)
+int	calculate_map_height(char **map)
 {
 	int	height;
 
@@ -167,12 +181,12 @@ int calculate_map_height(char **map)
 	return (height);
 }
 
-int calculate_map_width(char **map)
+int	calculate_map_width(char **map)
 {
 	int	max_width;
 	int	i;
 	int	width;
-	
+
 	i = 0;
 	max_width = 0;
 	while (map[i])
@@ -189,8 +203,8 @@ int calculate_map_width(char **map)
 
 int	count_file_lines(const char *file_path)
 {
-	int	fd;
-	int	lines;
+	int		fd;
+	int		lines;
 	char	*line;
 
 	lines = 0;
@@ -209,17 +223,17 @@ int	count_file_lines(const char *file_path)
 	return (lines);
 }
 
-int color_floor(unsigned long floor_color)
+int	color_floor(unsigned long floor_color)
 {
 	return ((int)floor_color);
 }
 
-int color_ceiling(unsigned long ceiling_color)
+int	color_ceiling(unsigned long ceiling_color)
 {
 	return ((int)ceiling_color);
 }
 
-void set_player_position(t_data *data)
+void	set_player_position(t_data *data)
 {
 	int	i;
 	int	j;
@@ -231,7 +245,7 @@ void set_player_position(t_data *data)
 		while (j < data->map_det.width)
 		{
 			if (data->map[i][j] == 'W' || data->map[i][j] == 'S'
-			|| data->map[i][j] == 'E' || data->map[i][j] == 'N')
+				|| data->map[i][j] == 'E' || data->map[i][j] == 'N')
 			{
 				data->player.pos_x = j + 0.5;
 				data->player.pos_y = i + 0.5;
@@ -246,7 +260,7 @@ void set_player_position(t_data *data)
 
 int	parse_file(const char *file_path, t_data *data)
 {
-	int fd_map;
+	int	fd_map;
 
 	data->map_det.lines_file = count_file_lines(file_path);
 	if (data->map_det.lines_file < 0)
