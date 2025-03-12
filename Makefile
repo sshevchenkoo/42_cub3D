@@ -31,7 +31,8 @@ INCLUDE = -I $(INC_PATH) -I $(LIBFT_PATH)
 SRCS 	=	main.c parse_img.c \
 			game_control.c game_draw.c game_engine.c game_loop.c \
 			utils2.c utils.c  valid.c \
-			parse_map_partial.c parse_text_wall.c parse.c
+			parse_map_partial.c parse_text_wall.c parse.c init_map.c \
+			parse_textures.c parse_helpers.c gamer_setup.c \
 
 OBJS = $(addprefix $(PATH_OBJS), $(SRCS:.c=.o))
 
