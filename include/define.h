@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   define.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/13 13:10:42 by itykhono          #+#    #+#             */
+/*   Updated: 2025/03/13 13:10:47 by itykhono         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef DEFINE_H
 # define DEFINE_H
 
@@ -13,7 +25,7 @@
 # define ERR_FL "Error File."
 # define ERR_MAP "Invalid map!"
 # define ERR_MAP_DIR "Map with no player direction set."
-# define ERR_RGB  "Invalid RGB color format to Floor/Ceiling"
+# define ERR_RGB "Invalid RGB color format to Floor/Ceiling"
 # define ERR_TEXT_MAP "Texture not found in file."
 # define ERR_TEXT_COL "Color not found in file."
 # define ERR_TEXT_PATH "Error in Texture. Invalid path."
@@ -36,13 +48,13 @@
 # define X 0
 # define Y 1
 
-#define ESCAPE_KEY 53
-#define W_KEY 13
-#define S_KEY 1
-#define A_KEY 0
-#define D_KEY 2
-#define LEFT_ARROW_KEY 123
-#define RIGHT_ARROW_KEY 124
+# define ESCAPE_KEY 53
+# define W_KEY 13
+# define S_KEY 1
+# define A_KEY 0
+# define D_KEY 2
+# define LEFT_ARROW_KEY 123
+# define RIGHT_ARROW_KEY 124
 
 # define TEX_SIZE 64
 
