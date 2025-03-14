@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:04:47 by itykhono          #+#    #+#             */
-/*   Updated: 2025/03/12 16:56:40 by itykhono         ###   ########.fr       */
+/*   Updated: 2025/03/14 12:41:20 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,6 @@ int	parse_textures_and_colors(int fd_map, t_texture_det *texture_det)
 		i++;
 		line = get_next_line(fd_map);
 	}
+	free(line);
 	return (i == 6);
 }
