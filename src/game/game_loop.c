@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:08:29 by itykhono          #+#    #+#             */
-/*   Updated: 2025/03/13 13:08:30 by itykhono         ###   ########.fr       */
+/*   Updated: 2025/03/14 13:01:40 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	close_hook(t_data *d)
 	mlx_destroy_image(d->view.mlx, d->view.screen.img);
 	mlx_destroy_window(d->view.mlx, d->view.win);
 	mlx_destroy_display(d->view.mlx);
+	free(d->map_det.path);
 	free_data(d);
 	free(d->view.mlx);
 	exit(SUCCESS);
